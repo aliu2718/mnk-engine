@@ -8,8 +8,11 @@ function App() {
 
   return (
     <div className="App">
-      Engine
+      <div id='turnText'>Black Move</div>
+
       {controller.renderBoard()}
+
+      <div id='moveList'>Moves<br /></div>
     </div>
   );
 }
