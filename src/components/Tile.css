@@ -1,0 +1,8 @@
+.tile {
+  display: grid;
+  place-content: center;
+  border: 3px solid black;
+  background-color: #d59f75;
+  width: var(--tileSize);
+  height: var(--tileSize);
+}

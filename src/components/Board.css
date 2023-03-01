@@ -1,0 +1,16 @@
+:root {
+  --rowNum: 0;
+  --colNum: 0;
+  --boardWidth: 600px;
+  --boardHeight: 600px;
+  --tileSize: 0px;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(var(--colNum), var(--tileSize));
+  grid-template-rows: repeat(var(--rowNum), var(--tileSize));
+  width: var(--boardWidth);
+  height: var(--boardHeight);
+  background-color: fuchsia;
+}

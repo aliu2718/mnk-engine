@@ -1,15 +1,15 @@
-import logo from './logo.svg';
+import React from 'react';
+import Controller from './components/Controller.js';
+
 import './App.css';
 
 function App() {
+  let controller = new Controller();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Initial game files.
-        </p>
-      </header>
+      Engine
+      {controller.renderBoard()}
     </div>
   );
 }
