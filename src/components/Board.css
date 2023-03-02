@@ -1,6 +1,6 @@
 :root {
-  --rowNum: 0;
-  --colNum: 0;
+  --numRows: 0;
+  --numCols: 0;
   --boardWidth: 600px;
   --boardHeight: 600px;
   --tileSize: 0px;
@@ -8,8 +8,8 @@
 
 #board {
   display: grid;
-  grid-template-columns: repeat(var(--colNum), var(--tileSize));
-  grid-template-rows: repeat(var(--rowNum), var(--tileSize));
+  grid-template-columns: repeat(var(--numCols), var(--tileSize));
+  grid-template-rows: repeat(var(--numRows), var(--tileSize));
   width: var(--boardWidth);
   height: var(--boardHeight);
   background-color: fuchsia;

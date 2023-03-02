@@ -20,7 +20,7 @@ export default class Tile {
    * Requests a player move to the controller when the tile is clicked. 
    */
   handleOnClick() {
-    this.controller.requestPlayerMove(this.row, this.col);
+    this.controller.updatePlayerMove(this.row, this.col);
   }
 
   /**

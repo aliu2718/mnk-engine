@@ -1,5 +1,6 @@
 import React from 'react';
 import Controller from './components/Controller.js';
+import RandomEngine from './engines/randomEngine.js';
 
 import './App.css';
 
@@ -9,6 +10,9 @@ function App() {
   return (
     <div className="App">
       <div id='turnText'>Black Move</div>
+
+      {controller.setEngine('black', new RandomEngine(controller))}
+      {controller.setEngine('white', null)}
 
       {controller.renderBoard()}
 

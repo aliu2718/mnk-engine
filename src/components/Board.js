@@ -9,13 +9,13 @@ export default class Board {
   /**
    * Initializes the properties of a new board.
    * @param {Constructor} constructor The controller for the game.
-   * @param {Number} rowNum The number of rows on the board.
-   * @param {Number} colNum The number of columns on the board.
+   * @param {Number} numRows The number of rows on the board.
+   * @param {Number} numCols The number of columns on the board.
    */
-  constructor(constructor, rowNum, colNum) {
+  constructor(constructor, numRows, numCols) {
     this.controller = constructor;
-    this.rowNum = rowNum;
-    this.colNum = colNum;
+    this.numRows = numRows;
+    this.numCols = numCols;
   }
 
   /**
@@ -26,8 +26,8 @@ export default class Board {
   initialize() {
     let board = [];
 
-    for (let i = this.rowNum; i > 0; i--) {
-      for (let j = 1; j <= this.colNum; j++) {
+    for (let i = this.numRows; i > 0; i--) {
+      for (let j = 1; j <= this.numCols; j++) {
         const tile = new Tile(this.controller, i, j);
         board.push(
           tile.initialize()
