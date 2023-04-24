@@ -4,6 +4,7 @@ import RandomEngine from './engines/randomEngine.js';
 
 import './App.css';
 
+
 function App() {
   let controller = new Controller();
 
@@ -22,13 +23,18 @@ function App() {
           <div id='moveList'>Moves<br /></div>
         </div>
 
-        <div>
-        <button onClick={controller.refreshPage}>New Game</button>
-      </div>
-      
-      </section>
-    </div>
+      </section >
+
+
+
+    </div >
   );
 }
 
 export default App;
+
+
+
+{/* <div>
+<button type="submit" onClick={controller.refreshPage}>New Game</button>
+</div> */}
