@@ -1,6 +1,6 @@
 import React from 'react';
 import Board from './Board.js';
-import Piece from './Piece.js';
+import Visualizer from './Visualizer.js';
 
 /**
  * [Controller] represents a controller that handles the game logic. The
@@ -17,10 +17,12 @@ export default class Controller extends React.Component {
   constructor(props) {
     super(props);
 
-    this.numRows = 9;
-    this.numCols = 9;
-    this.tilePx = 60;
+    this.numRows = 20;
+    this.numCols = 20;
+    this.tilePx = 32;
     this.connect = 5;
+
+    this.visualizer = new Visualizer(this);
 
     // For specifiying engines
     this.whiteEngine = null;
@@ -55,6 +57,62 @@ export default class Controller extends React.Component {
   // }
 
   /**
+   * Returns the number of rows in the game board.
+   * @returns An integer for the number of rows.
+   */
+  getNumRows() {
+    return this.numRows;
+  }
+
+  /**
+   * Returns the number of columns in the game board.
+   * @returns An integer for the number of columns.
+   */
+  getNumCols() {
+    return this.numCols;
+  }
+
+  /**
+   * Returns the IDs of the pieces on the board.
+   * @returns An array of piece IDs.
+   */
+  getPiecesId() {
+    return this.state.piecesId;
+  }
+
+  /**
+   * Returns the UI visualizer for the game.
+   * @returns The visualizer for the game.
+   */
+  getVisualizer() {
+    return this.visualizer;
+  }
+
+  /**
+   * Returns the current board state in the game.
+   * @returns A 2d array representing the current board state.
+   */
+  getBoardState() {
+    return this.state.boardState;
+  }
+
+  /**
+   * Returns whether or not the game has ended.
+   * @returns A boolean for whether or not the game has ended.
+   */
+  isGameEnd() {
+    return this.state.isGameEnd;
+  }
+
+  /**
+   * Returns whether or not the current move is black's move.
+   * @returns A boolean for whether or not the current move is black's move.
+   */
+  isBlackMove() {
+    return this.state.isBlackMove;
+  }
+
+  /**
    * Returns all legal moves in the game state.
    * @returns An array of [column, row] coordinates of all legal moves.
    */
@@ -81,12 +139,9 @@ export default class Controller extends React.Component {
    */
   setPiece(row, col) {
     this.state.boardState[row - 1][col - 1] = this.state.isBlackMove ? -1 : 1;
-
-    const pieceColor = this.state.isBlackMove ? 'black' : 'white';
-    const piece = (new Piece(pieceColor, row, col)).initialize();
-
-    document.getElementById(`${col},${row}`).append(piece);
     this.state.piecesId.push((col, row));
+
+    this.visualizer.setPiece(row, col);
   }
 
   /**
@@ -129,31 +184,6 @@ export default class Controller extends React.Component {
   }
 
   /**
-   * Updates the text interface based on the move. The move is displayed on the
-   * webpage, and the display for the turn is updated.
-   * @param {Number} row The row-coord of the move. 
-   * @param {Number} col The column-coord of the move. 
-   */
-  updateInterface(row, col) {
-    var moveList = document.getElementById('moveList');
-    var move = document.createTextNode(` (${col}, ${row})`);
-    moveList.appendChild(move);
-
-    if (this.state.piecesId.length % this.numCols == 0) {
-      moveList.innerHTML += '<br />'
-    }
-
-    var turnText = document.getElementById('turnText');
-    if (this.state.isGameEnd) {
-      const color = !this.state.isBlackMove ? 'Black' : 'White';
-      turnText.innerHTML = color + ' Won!';
-    } else {
-      const color = this.state.isBlackMove ? 'Black' : 'White';
-      turnText.innerHTML = color + ' Move';
-    }
-  }
-
-  /**
    * Updates the game state appropriately based on a move made on the specified
    * row and column coordinates. Updating the game state involves:
    * 
@@ -175,14 +205,14 @@ export default class Controller extends React.Component {
     this.setPiece(row, col);
 
     const connection = this.checkConnect(row, col);
-    console.log(connection);
+    //console.log(connection);
 
     if (connection >= this.connect) {
       this.state.isGameEnd = true;
     }
 
     this.state.isBlackMove = !this.state.isBlackMove;
-    this.updateInterface(row, col);
+    this.visualizer.updateInterface(row, col);
 
     if (!this.state.isGameEnd) {
       this.requestEngineMove();
@@ -212,21 +242,19 @@ export default class Controller extends React.Component {
    * Requests a move from the engine if it is currently an engine's turn, then
    * updates the game state based on the move returned by the engine.
    */
-  requestEngineMove() {
-    const moveDelay = 1000; // in ms
+  async requestEngineMove() {
+    const timer = ms => new Promise(res => setTimeout(res, ms));
+    const delay = 250;
+
     if (!this.state.isGameEnd) {
       if (this.blackEngine != null && this.state.isBlackMove) {
-        var [col, row] = this.blackEngine.getMove();
-
-        setTimeout(() => {
-          this.updateState(row, col);
-        }, moveDelay);
+        await timer(delay);
+        var [col, row] = await this.blackEngine.getMove();
+        this.updateState(row, col);
       } else if (this.whiteEngine != null && !this.state.isBlackMove) {
-        var [col, row] = this.whiteEngine.getMove();
-
-        setTimeout(() => {
-          this.updateState(row, col);
-        }, moveDelay);
+        await timer(delay);
+        var [col, row] = await this.whiteEngine.getMove();
+        this.updateState(row, col);
       }
     }
   }

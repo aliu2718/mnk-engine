@@ -9,18 +9,24 @@ function App() {
 
   return (
     <div className="App">
-      <div id='turnText'>Black Move</div>
+      <section>
+        <div id="board-style">
+          {controller.renderBoard()}
+        </div>
 
-      {controller.setEngine('black', new RandomEngine(controller))}
-      {controller.setEngine('white', null)}
+        {controller.setEngine('black', new RandomEngine(controller, true))}
+        {controller.setEngine('white', new RandomEngine(controller, true))}
 
-      {controller.renderBoard()}
+        <div id="content-style">
+          <div id='turnText'>Black Move</div>
+          <div id='moveList'>Moves<br /></div>
+        </div>
 
-      <div>
+        <div>
         <button onClick={controller.refreshPage}>New Game</button>
       </div>
-
-      <div id='moveList'>Moves<br /></div>
+      
+      </section>
     </div>
   );
 }

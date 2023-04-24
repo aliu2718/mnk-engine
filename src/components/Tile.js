@@ -6,12 +6,12 @@ import './Tile.css';
 export default class Tile {
   /**
    * Initializes the properties of a a new tile.
-   * @param {Controller} constructor The controller for the game. 
+   * @param {Controller} controller The controller for the game. 
    * @param {Number} row The row-coord of the tile on the board. 
    * @param {Number} col The column-coord of the tile on the board. 
    */
-  constructor(constructor, row, col) {
-    this.controller = constructor;
+  constructor(controller, row, col) {
+    this.controller = controller;
     this.row = row;
     this.col = col;
   }
