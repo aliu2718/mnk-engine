@@ -8,12 +8,12 @@ import './Board.css'
 export default class Board {
   /**
    * Initializes the properties of a new board.
-   * @param {Constructor} constructor The controller for the game.
+   * @param {Controller} controller The controller for the game.
    * @param {Number} numRows The number of rows on the board.
    * @param {Number} numCols The number of columns on the board.
    */
-  constructor(constructor, numRows, numCols) {
-    this.controller = constructor;
+  constructor(controller, numRows, numCols) {
+    this.controller = controller;
     this.numRows = numRows;
     this.numCols = numCols;
   }
