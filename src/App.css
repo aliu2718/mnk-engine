@@ -11,5 +11,11 @@
 }
 
 #turnText {
+  padding: 10px;
   color: rgb(107, 255, 136);
+}
+
+button {
+  margin: 10px;
+  color: black;
 }

@@ -16,6 +16,10 @@ function App() {
 
       {controller.renderBoard()}
 
+      <div>
+        <button onClick={controller.refreshPage}>New Game</button>
+      </div>
+
       <div id='moveList'>Moves<br /></div>
     </div>
   );
