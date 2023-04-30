@@ -1,103 +1,107 @@
-// Currently not working: have to incorporate better into game code 
+/**
+ * [MinimaxEngine] represents an engine that makes legal moves  in the game
+ * as determined by the minimax algorithm.
+ */
+export default class MinimaxEngine {
+  /**
+   * Initializes a random engine.
+   * @param {Controller} controller The controller for the game. 
+   * @param {Boolean} visualize Whether or not to visualize the engine's moves.
+   */
+  constructor(controller, visualize) {
+    this.controller = controller;
+    this.visualize = visualize;
+  }
 
+  /**
+   * Requests a visualization of the moves provided in [moves] based on the 
+   * specified evaluation value for each move.
+   * @param {Array} moves A 2d array of moves and evaluation values. The moves are 
+   * 2d [row, col] arrays, and the evaluation values are between 0 and 1.
+   */
+  visualizeMoves(moves) {
+    if (this.visualize) {
+      x
+      let visualizer = this.controller.getVisualizer();
+      visualizer.resetVisualizations();
+      visualizer.visualizeMoves(moves);
+    }
+  }
+  /**
+   * Minimax algorithm
+   */
+  async minimax(isBlackMove, controller) {
+    if (controller.state.isGameEnd) {
+      return 0
+    }
+    scores = []
 
+    for (let i = legalMoves.length - 1; i > 0; i--) {
+      this.controller.setPiece(legalMoves[i])
+      scores.add(minimax(!isBlackMove, controller))
+      this.controller.undoPiece(legalMoves[i])
+    }
 
-// /**
-//  * [RandomEngine] represents an engine that makes random legal moves in the game.
-//  */
-// export default class MinMaxEngine {
-//   /**
-//    * Initializes a random engine.
-//    * @param {Controller} controller The controller for the game. 
-//    */
-//   constructor(controller) {
-//     this.controller = controller;
-//   }
+    if (isBlackTurn) {
+      return scores.max()
+    }
+    else return scores.min()
+  }
 
-//   emptyIndexies(board) {
-//     return board.filter(s => s != "O" && s != "X");
-//   }
+  /**
+   * Returns the best [k] moves in the game alongside the evaluations for each
+   * move. The best moves are determined by the minimax algrithm, which takes in
+   * an array of legal moves and outputs the first [k] moves that will maximize 
+   * [score] in descending order. 
+   * 
+   * TO EDIT: If visualizing the engine's moves, the array of legal moves is shuffled 
+   * multiple times, with the best [k] moves for each repetition visualized on 
+   * the game board. 
+   */
+  async getBestMoves(k) {
+    let legalMoves = this.controller.getLegalMoves(); //array of coords
+    const prob = 1 / legalMoves.length;
 
-//   winning(board, player) {
-    
-//   }
+    // Timer for visualizations
+    const timer = ms => new Promise(res => setTimeout(res, ms));
+    const delay = this.visualize ? 200 : 0;
 
-//   /**
-//    * Returns the best [k] moves in the game alongside the evaluations for each
-//    * move. 
-//    */
-//   getBestMoves(newBoard, player) {
+    let bestScore = -Math.inf; //Jane
+    let bestMoves = [];
+    const repetitions = 5;
+    for (let m = 0; m < repetitions; m++) {
+      // call minimax algo
+      for (let i = legalMoves.length - 1; i > 0; i--) {
+        let temp = legalMoves[i];
+        this.controller.setPiece(temp)
 
-//     //available spots
-//     var spotsLeft = this.emptyIndexies(newBoard);
+        score = minimax(this.controller.state.isBlackMove, this.controller)
 
-//     // checks for the terminal states such as win, lose, and tie 
-//     //and returning a value accordingly
-//     if (winning(newBoard, blackPlayer)) {
-//       return { score: Math.min() };
-//     }
-//     else if (winning(newBoard, whitePlayer)) {
-//       return { score: Math.max() };
-//     }
-//     else if (spotsLeft.length === 0) {
-//       return { score: 0 };
-//     }
+        this.controller.undoPiece(temp)
 
+        if (score > bestScore) {
+          bestScore = score
+          bestMoves.push(temp)
+        }
+        this.controller.setPiece(move)
+      }
+      //end 
 
-//     let legalMoves = this.controller.getLegalMoves();
+      this.visualizeMoves(bestMoves);
+      if (m != repetitions - 1) {
+        await timer(delay);
+      }
+    }
 
-//     // loop through available spots
-//     for (var i = 0; i < spotsLeft.length; i++) {
-//       //create an object for each and store the index of that spot 
-//       var move = {};
-//       move.index = newBoard[spotsLeft[i]];
+    return bestMoves;
+  }
 
-//       // set the empty spot to the current player
-//       newBoard[spotsLeft[i]] = player;
-
-//       /*collect the score resulted from calling minimax 
-//         on the opponent of the current player*/
-//       if (this.controller.isBlackMove == true) {
-//         var result = minimax(newBoard, blackPlayer);
-//         move.score = result.score;
-//       }
-//       else {
-//         var result = minimax(newBoard, whitePlayer);
-//         move.score = result.score;
-//       }
-
-//       // reset the spot to empty
-//       newBoard[spotsLeft[i]] = move.index;
-
-//       // push the object to the array
-//       legalMoves.push(move);
-
-
-
-
-//       var bestMove;
-//       if (this.controller.isBlackMove == true) {
-//         var bestScore = -10000;
-//         for (var i = 0; i < moves.length; i++) {
-//           if (moves[i].score > bestScore) {
-//             bestScore = moves[i].score;
-//             bestMove = i;
-//           }
-//         }
-//       } else {
-
-//         // else loop over the moves and choose the move with the lowest score
-//         var bestScore = 10000;
-//         for (var i = 0; i < moves.length; i++) {
-//           if (moves[i].score < bestScore) {
-//             bestScore = moves[i].score;
-//             bestMove = i;
-//           }
-//         }
-//       }
-
-//       // return the chosen move (object) from the moves array
-//       return moves[bestMove];
-//     }
-//   }
-// }
+  /**
+   * Returns the best move as determined by the engine. The best move is the 
+   * first move in the array of best moves.
+   */
+  async getMove() {
+    const bestMoves = await this.getBestMoves(10);
+    return bestMoves[0][0];
+  }
+}
