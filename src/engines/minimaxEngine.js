@@ -12,37 +12,75 @@ export default class MinimaxEngine {
     this.controller = controller;
     this.visualize = visualize;
   }
+  /** Game state evaluator */
 
   /**
-   * Requests a visualization of the moves provided in [moves] based on the 
+   * Requests a visualization of the moves provisded in [moves] based on the 
    * specified evaluation value for each move.
    * @param {Array} moves A 2d array of moves and evaluation values. The moves are 
    * 2d [row, col] arrays, and the evaluation values are between 0 and 1.
    */
   visualizeMoves(moves) {
     if (this.visualize) {
-      x
       let visualizer = this.controller.getVisualizer();
       visualizer.resetVisualizations();
       visualizer.visualizeMoves(moves);
     }
   }
+
+  /** Set piece */
+  async setPiece(pos, controller) {
+    let row = pos[0];
+    let col = pos[1];
+    let controllerCopy = controller;
+    controllerCopy.state.boardState[row - 1][col - 1] = controller.state.isBlackMove ? -1 : 1;
+    controllerCopy.state.piecesId.push(pos);
+    controllerCopy.state.isBlackMove = controller.state.isBlackMove;
+    return controllerCopy;
+  }
+
+  /** Undo piece */
+  async undoPiece(pos, controller) {
+    let row = pos[0];
+    let col = pos[1];
+    let controllerCopy = controller;
+    controllerCopy.state.boardState[row - 1][col - 1] = 0;
+    controllerCopy.state.piecesId.push(pos);
+    controllerCopy.state.isBlackMove = controller.state.isBlackMove; s
+    return controllerCopy
+  }
+
+  /**
+   * Win condition checker
+   */
+  async gameWon(pos, controller) {
+    let maxConnect = controller.checkConnect(pos);
+    return controller.props.connect == maxConnect; //TODO: pass in k
+  }
   /**
    * Minimax algorithm
    */
-  async minimax(isBlackMove, controller) {
+  async minimax(isBlackMove, controller, pos) {
+    let scores = []
     if (controller.state.isGameEnd) {
       return 0
     }
-    scores = []
-
+    if (this.gameWon(pos, controller)) {
+      if (isBlackMove) {
+        scores.push(1)
+      }
+      else {
+        scores.push(-1)
+      }
+    }
+    let legalMoves = this.controller.getLegalMoves()
     for (let i = legalMoves.length - 1; i > 0; i--) {
-      this.controller.setPiece(legalMoves[i])
-      scores.add(minimax(!isBlackMove, controller))
-      this.controller.undoPiece(legalMoves[i])
+      this.setPiece(legalMoves[i], controller)
+      scores.add(this.minimax(!isBlackMove, controller))
+      this.undoPiece(legalMoves[i], controller)
     }
 
-    if (isBlackTurn) {
+    if (isBlackMove) {
       return scores.max()
     }
     else return scores.min()
@@ -60,39 +98,30 @@ export default class MinimaxEngine {
    */
   async getBestMoves(k) {
     let legalMoves = this.controller.getLegalMoves(); //array of coords
-    const prob = 1 / legalMoves.length;
 
     // Timer for visualizations
     const timer = ms => new Promise(res => setTimeout(res, ms));
     const delay = this.visualize ? 200 : 0;
 
-    let bestScore = -Math.inf; //Jane
+    let bestScore = -Math.inf;
     let bestMoves = [];
-    const repetitions = 5;
-    for (let m = 0; m < repetitions; m++) {
-      // call minimax algo
-      for (let i = legalMoves.length - 1; i > 0; i--) {
-        let temp = legalMoves[i];
-        this.controller.setPiece(temp)
 
-        score = minimax(this.controller.state.isBlackMove, this.controller)
+    // call minimax algo
+    for (let i = legalMoves.length - 1; i > 0; i--) {
+      let temp = legalMoves[i];
+      let controllerCopy = this.setPiece(temp, this.controller)
+      let score = this.minimax(controllerCopy.state.isBlackMove, controllerCopy, temp)
+      controllerCopy = this.undoPiece(temp, this.controller)
 
-        this.controller.undoPiece(temp)
-
-        if (score > bestScore) {
-          bestScore = score
-          bestMoves.push(temp)
-        }
-        this.controller.setPiece(move)
+      if (score > bestScore) {
+        bestScore = score
+        bestMoves.push(temp)
       }
-      //end 
-
-      this.visualizeMoves(bestMoves);
-      if (m != repetitions - 1) {
-        await timer(delay);
-      }
+      this.controller.setPiece(temp)
     }
+    //end 
 
+    this.visualizeMoves(bestMoves);
     return bestMoves;
   }
 
