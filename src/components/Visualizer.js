@@ -42,7 +42,7 @@ export default class Visualizer {
    */
   setPiece(row, col) {
     const pieceColor = this.controller.isBlackMove() ? 'black' : 'white';
-    const piece = (new Piece(pieceColor, row, col)).initialize();
+    const piece = (new Piece(pieceColor, row, col)).initialize(this.controller.getPiecesId().length);
 
     document.getElementById(`${col},${row}`).append(piece);
   }

@@ -18,12 +18,14 @@ export default class Piece {
 
   /**
    * Initializes a piece element for displaying the piece visually.
-   * @returns A piece element to display on a tile.
+   * @param {Number} move The move number of the piece
+   * @returns A piece element to display on a tile
    */
-  initialize() {
+  initialize(move) {
     const piece = document.createElement('div');
     piece.classList.add(this.color);
     piece.setAttribute('id', `${this.col}-${this.row}`);
+    piece.innerHTML = move;
 
     return piece;
   }

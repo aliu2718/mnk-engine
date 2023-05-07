@@ -34,7 +34,7 @@ export default class Controller extends React.Component {
     document.documentElement.style.setProperty("--tileSize", this.tilePx + "px");
     document.documentElement.style.setProperty("--boardWidth", this.tilePx * this.numCols + "px");
     document.documentElement.style.setProperty("--boardHeight", this.tilePx * this.numRows + "px");
-    document.documentElement.style.setProperty("--pieceSize", this.tilePx * 0.5 + "px");
+    document.documentElement.style.setProperty("--pieceSize", this.tilePx * 0.6 + "px");
 
     this.state = {
       boardState: [],
@@ -55,6 +55,14 @@ export default class Controller extends React.Component {
   // onmousemove = function (event) {
   //   console.log("mouse location:", event.clientX, event.clientY)
   // }
+
+  /**
+   * Returns the number of connected pieces needed to win the game.
+   * @returns An integer for the required number of connected pieces for a win.
+   */
+  getConnectionCriteria() {
+    return this.connect;
+  }
 
   /**
    * Returns the number of rows in the game board.
@@ -244,7 +252,7 @@ export default class Controller extends React.Component {
    */
   async requestEngineMove() {
     const timer = ms => new Promise(res => setTimeout(res, ms));
-    const delay = 250;
+    const delay = 50;
 
     if (!this.state.isGameEnd) {
       if (this.blackEngine != null && this.state.isBlackMove) {
