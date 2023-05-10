@@ -35,7 +35,9 @@ export default class RandomEngine {
    * 
    * If visualizing the engine's moves, the array of legal moves is shuffled 
    * multiple times, with the best [k] moves for each repetition visualized on 
-   * the game board. 
+   * the game board.
+   * @param {Number} k The number of best moves to find
+   * @returns An array of moves, alongside their evaluations
    */
   async getBestMoves(k) {
     let legalMoves = this.controller.getLegalMoves();
@@ -73,6 +75,7 @@ export default class RandomEngine {
   /**
    * Returns the best move as determined by the engine. The best move is the 
    * first move in the array of best moves.
+   * @return The best move evaluated by the engine.
    */
   async getMove() {
     const bestMoves = await this.getBestMoves(10);

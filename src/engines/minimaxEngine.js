@@ -46,7 +46,7 @@ export default class MinimaxEngine {
     let controllerCopy = controller;
     controllerCopy.state.boardState[row - 1][col - 1] = 0;
     controllerCopy.state.piecesId.push(pos);
-    controllerCopy.state.isBlackMove = controller.state.isBlackMove; s
+    controllerCopy.state.isBlackMove = controller.state.isBlackMove;
     return controllerCopy
   }
 
